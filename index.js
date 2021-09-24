@@ -1,6 +1,4 @@
 
-const Big = require('big.js');
-
 /**
  * @param {number} nodes count
  * @return {void}
@@ -24,36 +22,22 @@ class FiLattice {
   }
 
   /**
-   * @param {Array} any
-   * @return {Array}
+   * @param {number} latitude
+   * @return {number}
    */
-  toAngle([lng, lat]) {
-    const x = new Big(lat);
-    return [
-      +lng, x.plus(90).toNumber(),
-    ];
-  }
-
-  /**
-   * @param {Array} any
-   * @return {Array}
-   */
-  toLocation([alfa, beta]) {
-    const x = new Big(beta);
-    return [
-      alfa, x.minus(90).toNumber(),
-    ];
+  getLatIndex(latitude) {
+    return Math.round((90 - latitude)/this.piece);
   }
 
   /**
    * @param {number} index
    * @return {Array}
    */
-  getNthAngle(index) {
+  getNthPoint(index) {
     const theta = (index * this.goldenAngle) % 360;
-    const alfa = theta > 180 ? theta - 360 : theta;
-    const beta = index * this.piece;
-    return [alfa, beta];
+    const lng = theta > 180 ? theta - 360 : theta;
+    const lat = 90 - index * this.piece;
+    return [lng, lat];
   }
 
   /**
@@ -61,29 +45,24 @@ class FiLattice {
    * @param {Array<number>} PointTwo
    * @return {Array<number>}
    */
-  getPoints([alfa1, beta1], [alfa2, beta2]) {
-    const one = Math.round(beta1/this.piece);
-    const two = Math.round(beta2/this.piece);
-    const nth = [one, two].sort();
+  getPoints([lng1, lat1], [lng2, lat2]) {
+    const one = this.getLatIndex(lat1);
+    const two = this.getLatIndex(lat2);
 
-    const alfas = [alfa1, alfa2].sort();
-    const betas = [beta1, beta2].sort();
+    const [nthMin, nthMax] = [one, two].sort();
+    const [lngMin, lngMax] = [lng1, lng2].sort();
 
     const points = [];
     let theta = 0;
-    for (let i = nth[0]; i <= nth[1]; i++) {
+    for (let i = nthMin; i <= nthMax; i++) {
       theta += this.goldenAngle;
       theta = theta % 360;
+      const [nthLng, nthLat] = this.getNthPoint(i);
 
-      const point = this.getNthAngle(i);
-      if (
-        point[0] > alfas[0] && point[0] < alfas[1] &&
-              point[1] > betas[0] && point[1] < betas[1]
-      ) {
-        points.push(point);
+      if ( nthLng > lngMin && nthLng < lngMax ) {
+        points.push([nthLng, nthLat]);
       }
     }
-
     return points;
   }
 
@@ -91,38 +70,30 @@ class FiLattice {
    * @param {Array} point
    * @return {Array}
    */
-  getClosestPoint([alfa, beta]) {
+  getClosestPoint([lng, lat]) {
     /**/
-    const startIndex = Math.round(beta/this.piece);
+    const startIndex = this.getLatIndex(lat);
 
-    /*
-      * In each point calculating and setting minimum angel of
-      * points
-      */
+    /**/
     let nearestDistance = 1;
-
-    /*
-      * In each point calculating and setting minimum angel of
-      * points
-      */
     let nearestIndex = null;
 
     let n = -1;
     while (true) {
       n++;
       for (const index of [startIndex+n, startIndex-n]) {
-        const [indexAlfa, indexBeta] = this.getNthAngle(index, this.piece);
+        const [indexlng, indexlat] = this.getNthPoint(index, this.piece);
 
-        const y = Math.abs(Math.sin(this.toRadians(indexBeta - beta)));
+        const y = Math.abs(Math.sin(this.toRadians(indexlat - lat)));
         if (y > nearestDistance) {
-          return this.getNthAngle(nearestIndex, this.piece);
+          return this.getNthPoint(nearestIndex, this.piece);
         }
 
-        if (Math.abs(indexAlfa - alfa) > 90) {
+        if (Math.abs(indexlng - lng) > 90) {
           continue;
         }
 
-        const x = Math.abs(Math.sin(this.toRadians(indexAlfa - alfa)));
+        const x = Math.abs(Math.sin(this.toRadians(indexlng - lng)));
         if (x > nearestDistance ) {
           continue;
         }
@@ -140,13 +111,16 @@ class FiLattice {
    * @param {Array} point
    * @return {Array}
    */
-  verifyLocation([alfa, beta]) {
-    const index = beta / this.piece;
-    const [curAlfa, curBeta] = this.getNthAngle(
-        Math.round(index), this.piece,
+  verifyPoint([lng, lat]) {
+    const [curlng, curlat] = this.getNthPoint(
+        this.getLatIndex(lat),
     );
-    return `j${curAlfa}` === `j${alfa}` &&
-      `j${curBeta}` === `j${beta}`;
+
+    console.log([lng, lat]);
+    console.log([curlng, curlat]);
+
+    return `x${curlng}` === `x${lng}` &&
+      `o${curlat}` === `o${lat}`;
   }
 }
 
