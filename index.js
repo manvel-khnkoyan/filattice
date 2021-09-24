@@ -1,4 +1,3 @@
-
 /**
  * @param {number} nodes count
  * @return {void}
@@ -108,17 +107,13 @@ class FiLattice {
   }
 
   /**
-   * @param {Array} point
-   * @return {Array}
+   * @param {Array<string>} point
+   * @return {boolean}
    */
   verifyPoint([lng, lat]) {
     const [curlng, curlat] = this.getNthPoint(
         this.getLatIndex(lat),
     );
-
-    console.log([lng, lat]);
-    console.log([curlng, curlat]);
-
     return `x${curlng}` === `x${lng}` &&
       `o${curlat}` === `o${lat}`;
   }
