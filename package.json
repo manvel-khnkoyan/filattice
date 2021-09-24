@@ -1,6 +1,6 @@
 {
   "name": "lattice",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "author": "Manvel",
@@ -11,5 +11,9 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-google": "^0.14.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:manvel-khnkoyan/filattice.git"
   }
 }
