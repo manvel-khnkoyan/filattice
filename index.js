@@ -2,13 +2,14 @@
  * @param {number} nodes count
  * @return {void}
  */
-class FiLattice {
+class Filattice {
   /**
    * @param {number} nodes count
    * @return {void}
    */
-  constructor(nodes = 100000000) {
+  constructor(nodes) {
     this.goldenAngle = 180 * (3 - Math.sqrt(5));
+    this.nodes = nodes;
     this.piece = 180 / nodes;
   }
 
@@ -24,7 +25,7 @@ class FiLattice {
    * @param {number} latitude
    * @return {number}
    */
-  getLatIndex(latitude) {
+  latIndex(latitude) {
     return Math.round((90 - latitude)/this.piece);
   }
 
@@ -32,91 +33,105 @@ class FiLattice {
    * @param {number} index
    * @return {Array}
    */
-  getNthPoint(index) {
+  nthPoint(index) {
     const theta = (index * this.goldenAngle) % 360;
     const lng = theta > 180 ? theta - 360 : theta;
     const lat = 90 - index * this.piece;
-    return [lng, lat];
+    return [lat, lng];
   }
 
   /**
-   * @param {Array<number>} PointOne
-   * @param {Array<number>} PointTwo
-   * @return {Array<number>}
+   * @param {Array} pointOne
+   * @param {Array} pointTwo
+   * @return {number}
    */
-  getPoints([lng1, lat1], [lng2, lat2]) {
-    const one = this.getLatIndex(lat1);
-    const two = this.getLatIndex(lat2);
-
-    const [nthMin, nthMax] = [one, two].sort();
-    const [lngMin, lngMax] = [lng1, lng2].sort();
-
-    const points = [];
-    let theta = 0;
-    for (let i = nthMin; i <= nthMax; i++) {
-      theta += this.goldenAngle;
-      theta = theta % 360;
-      const [nthLng, nthLat] = this.getNthPoint(i);
-
-      if ( nthLng > lngMin && nthLng < lngMax ) {
-        points.push([nthLng, nthLat]);
-      }
-    }
-    return points;
+  distanceOf([lat1, lng1], [lat2, lng2]) {
+    const dLat = this.toRadians(lat2 - lat1);
+    const dlng = this.toRadians(lng2 - lng1);
+    const a = Math.sin(dLat / 2) *
+      Math.sin(dLat / 2) +
+      Math.cos(this.toRadians(lat1)) *
+      Math.cos(this.toRadians(lat2)) *
+      Math.sin(dlng / 2) * Math.sin(dlng / 2);
+    return 2 * Math.atan2(
+        Math.sqrt(a), Math.sqrt(1 - a),
+    );
   }
 
   /**
+   * Actually it get nearest
+   * points at first - sorted
    * @param {Array} point
+   * @param {number} length
    * @return {Array}
    */
-  getClosestPoint([lng, lat]) {
-    /**/
-    const startIndex = this.getLatIndex(lat);
+  getPoints([lat, lng], length = 1) {
+    /*
+     * Set points and start point */
+    const index = this.latIndex(lat);
+    const points = Array.from({length});
 
-    /**/
-    let nearestDistance = 1;
-    let nearestIndex = null;
-
-    let n = -1;
-    while (true) {
-      n++;
-      for (const index of [startIndex+n, startIndex-n]) {
-        const [indexlng, indexlat] = this.getNthPoint(index, this.piece);
-
-        const y = Math.abs(Math.sin(this.toRadians(indexlat - lat)));
-        if (y > nearestDistance) {
-          return this.getNthPoint(nearestIndex, this.piece);
+    /*
+     * functions that build posts*/
+    const set = (a, c) => {
+      const index = a.findIndex((i) => !i || c[2] < i[2]);
+      if (index > -1) {
+        for (let i = a.length - 1; i > index; i--) {
+          a[i] = a[i-1];
         }
-
-        if (Math.abs(indexlng - lng) > 90) {
-          continue;
-        }
-
-        const x = Math.abs(Math.sin(this.toRadians(indexlng - lng)));
-        if (x > nearestDistance ) {
-          continue;
-        }
-
-        const distance = Math.sqrt(x*x + y*y);
-        if (distance < nearestDistance) {
-          nearestDistance = distance;
-          nearestIndex = index;
-        }
+        a[index] = c;
       }
+    };
+
+    /*
+    * Set initial point */
+    const start = this.nthPoint(index);
+    set(points, [...start, this.distanceOf(
+        start, [lat, lng])]);
+
+    /*
+     * Loop To Find */
+    let n = 1;
+    while (true) {
+      if (!((indexes) => {
+        for (const i of indexes) {
+          if (i < 0 || i > this.nodes) break;
+          const [nLat, nLng] = this.nthPoint(i);
+          const dist = this.distanceOf([nLat, nLng], [lat, lng]);
+
+          const last = points[points.length - 1];
+          if (!last || dist < last[2]) {
+            set(points, [nLat, nLng, dist]);
+          }
+
+          const max = this.distanceOf([nLat, lng], [lat, lng]);
+          if (last && last[2] < max) {
+            return false;
+          }
+        }
+        return true;
+      })([index+n, index-n])) {
+        break;
+      };
+      n++;
     }
+
+    return points.map(
+        ([a, b]) => [a, b],
+    );
   }
 
   /**
    * @param {Array<string>} point
    * @return {boolean}
    */
-  verifyPoint([lng, lat]) {
-    const [curlng, curlat] = this.getNthPoint(
-        this.getLatIndex(lat),
+  verifyPoint([lat, lng]) {
+    const [curlat, curlng] = this.nthPoint(
+        this.latIndex(lat),
     );
-    return `x${curlng}` === `x${lng}` &&
-      `o${curlat}` === `o${lat}`;
+    return `o${curlat}` === `o${lat}` &&
+    `x${curlng}` === `x${lng}`;
   }
 }
 
-module.exports = FiLattice;
+module.exports = Filattice;
