@@ -172,7 +172,7 @@ class Filattice {
   * @return {boolean} */
   verifyPoint([lat, lng]) {
     if (lat > 90 || lat < -90) return false;
-    if (lat > 180 || lat < -180) return false;
+    if (lng > 180 || lng < -180) return false;
     const [curlat, curlng] = this.nthPoint(
         this.latIndex(lat),
     );
