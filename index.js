@@ -13,6 +13,20 @@ class Filattice {
   }
 
   /**
+  * @param {Array} angle
+  * @return {void}
+  * @throws */
+  validatePoint([lat, lng]) {
+    if (
+      isNaN(lat) || isNaN(lng)||
+      lat > 90 || lat < -90 ||
+      lng > 180 || lng < -180
+    ) {
+      throw new Error('Invalid geolocation');
+    }
+  }
+
+  /**
   * @param {number} angle
   * @return {number} */
   toRadians(angle) {
@@ -59,6 +73,9 @@ class Filattice {
   * @param {number} distance
   * @return {Array} */
   pointsInRange([lat, lng], distance) {
+    /* Validate Point */
+    this.validatePoint([lat, lng]);
+
     /* */
     const points = [];
     /*
@@ -102,6 +119,9 @@ class Filattice {
   * @param {number} length
   * @return {Array} */
   nearestPoints([lat, lng], length = 1) {
+    /* Validate Point */
+    this.validatePoint([lat, lng]);
+
     /*
      * Set points and start point */
     const startIndex = this.latIndex(lat);
@@ -171,6 +191,10 @@ class Filattice {
   * @param {Array<string>} point
   * @return {boolean} */
   verifyPoint([lat, lng]) {
+    /* Validate Point */
+    this.validatePoint([lat, lng]);
+
+    /* Verify */
     if (lat > 90 || lat < -90) return false;
     if (lng > 180 || lng < -180) return false;
     const [curlat, curlng] = this.nthPoint(

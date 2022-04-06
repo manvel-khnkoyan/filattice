@@ -46,6 +46,20 @@ console.log(lattice.verifyPoint(
     [40.18874003, 44.52654266357422],
 ));
 
+
+/* Example 5
+* */
+console.log('');
+console.log('Get Nearset with wrong order[-53.2968852, -168.4579599]');
+try {
+  lattice.nearestPoints(
+      [-168.4579599, -53.2968852], 16,
+  ).forEach(paint);
+} catch (e) {
+  console.log('Passed');
+}
+
+
 console.log('');
 console.log('Should be false');
 console.log(lattice.verifyPoint(
