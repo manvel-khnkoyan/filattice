@@ -97,7 +97,7 @@ class Filattice {
           const dist = this.distanceOf([iLat, iLng], [lat, lng]);
           const max = this.distanceOf([iLat, lng], [lat, lng]);
           if (dist < distance) {
-            points.push([iLat, iLng, dist]);
+            points.push([iLat, iLng, dist, i]);
           }
           if (max > distance) {
             return false;
@@ -142,8 +142,7 @@ class Filattice {
     /*
     * Set initial point */
     const start = this.nthPoint(startIndex);
-    set(points, [...start, this.distanceOf(
-        start, [lat, lng])]);
+    set(points, [...start, this.distanceOf(start, [lat, lng]), startIndex]);
 
     /*
     * Loop To Find */
@@ -157,7 +156,7 @@ class Filattice {
 
           const last = points[points.length - 1];
           if (!last || dist < last[2]) {
-            set(points, [nLat, nLng, dist]);
+            set(points, [nLat, nLng, dist, i]);
           }
 
           const max = this.distanceOf([nLat, lng], [lat, lng]);
