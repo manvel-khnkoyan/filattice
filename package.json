@@ -5,9 +5,14 @@
   "main": "index.js",
   "author": "Manvel",
   "license": "ISC",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test.js"
+  },
   "devDependencies": {
     "eslint": "^7.32.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "expect": "^28.1.0",
+    "mocha": "^10.0.0"
   },
   "repository": {
     "type": "git",

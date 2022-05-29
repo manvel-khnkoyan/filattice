@@ -147,16 +147,34 @@ class Filattice {
     /*
     * Loop To Find */
     let n = 1;
+    let maxLng = 0;
+
+
     while (true) {
       if (!((indexes) => {
         for (const i of indexes) {
           if (i < 0 || i > this.nodes) break;
           const [nLat, nLng] = this.nthPoint(i);
-          const dist = this.distanceOf([nLat, nLng], [lat, lng]);
-
           const last = points[points.length - 1];
+
+          /*
+           * Optimization: when nth point lng is
+           * bigger then maxLng then sckip this loop */
+          if (last) {
+            if (
+              Math.abs(nLng - lng) > maxLng
+            ) continue;
+          }
+
+          const dist = this.distanceOf([nLat, nLng], [lat, lng]);
           if (!last || dist < last[2]) {
             set(points, [nLat, nLng, dist, i]);
+
+            /*
+             * When There is at least ${length} points
+             * Set maxLng farthest point lng */
+            const lt = points[points.length - 1];
+            if (lt) maxLng = Math.abs(lt[1] - lng);
           }
 
           const max = this.distanceOf([nLat, lng], [lat, lng]);
