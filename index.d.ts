@@ -4,10 +4,13 @@
 */
 declare class FiLattice {
   constructor(nodes?: number);
-  toRadians(opts: number): number;
-  getLatIndex(opts: number): number;
-  getNthPoint(opts: number): number;
-  getPoints(pointOne: Array<number>, pointTwo: Array<number>, ): Array<number>;
-  getClosestPoint(pointOne: Array<number>, pointTwo: Array<number>, ): Array<number>;
-  verifyPoint(pointOne: Array<string>, pointTwo: Array<string>, ): boolean;
+  validatePoint(point: Array<number>): void;
+  toRadians(angle: number): number;
+  latIndex(latitude: number): number;
+  nthPoint(index: number): Array<number>;
+  distanceOf(pointOne: Array<number>, pointTwo: Array<number>): number;
+  pointsInRange(point: Array<number>, distance: namber ): Array;
+  nearestPoints(point: Array<number>, length: number ): Array;
+  nearbyPoints(point: Array<number> ): Array;
+  verifyPoint(point: Array<string>): boolean;
 }

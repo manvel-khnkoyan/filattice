@@ -152,6 +152,7 @@ class Filattice {
 
     while (true) {
       if (!((indexes) => {
+        if (indexes[1] < 0 && indexes[0] > this.nodes) return false;
         for (const i of indexes) {
           if (i < 0 || i > this.nodes) break;
           const [nLat, nLng] = this.nthPoint(i);
