@@ -1,7 +1,7 @@
 
-const assert = require('assert');
-const {expect} = require('expect');
-const Filattice = require('./index');
+import assert from 'assert';
+import Filattice from './index.mjs';
+import {expect} from 'expect';
 
 describe('Verifing Points', function() {
   const Lattice1B = new Filattice(1000000000);

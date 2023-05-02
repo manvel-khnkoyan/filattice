@@ -2,7 +2,7 @@
 * @param {number} nodes count
 * @return {void}
 */
-class Filattice {
+export default class Filattice {
   /**
   * @param {number} nodes count
   * @return {void} */
@@ -222,5 +222,3 @@ class Filattice {
     `x${curlng}` === `x${lng}`;
   }
 }
-
-module.exports = Filattice;

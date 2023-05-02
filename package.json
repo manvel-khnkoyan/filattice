@@ -1,9 +1,11 @@
 {
   "name": "filattice",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
-  "main": "index.js",
-  "author": "Manvel",
+  "type": "module",
+  "main": "index.cjs",
+  "module": "index.mjs",
+  "author": "Manvel Khnkoyan",
   "license": "ISC",
   "scripts": {
     "test": "./node_modules/.bin/mocha test.js"
