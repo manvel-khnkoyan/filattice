@@ -212,9 +212,8 @@ export default class Filattice {
 
   /**
    * @param {Array<string>} point
-   * @param {number} accuracy
    * @return {boolean} */
-  verifyPoint([lat, lng], accuracy = undefined) {
+  verifyPoint([lat, lng]) {
     /* Validate Point */
     if (!this.validatePoint([lat, lng])) {
       return false;
@@ -224,8 +223,8 @@ export default class Filattice {
     const [curlat, curlng] = this.nthPoint(this.latIndex(lat));
 
     return (
-      parseFloat(lat).toPrecision(accuracy) === curlat.toPrecision(accuracy) &&
-      parseFloat(lng).toPrecision(accuracy) === curlng.toPrecision(accuracy)
+      parseFloat(lat) === curlat &&
+      parseFloat(lng) === curlng
     );
   }
 }
