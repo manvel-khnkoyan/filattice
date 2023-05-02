@@ -1,7 +1,6 @@
 
 import assert from 'assert';
 import Filattice from './index.mjs';
-import {expect} from 'expect';
 
 describe('Verifing Points', function() {
   const Lattice1B = new Filattice(1000000000);
@@ -31,8 +30,8 @@ describe('Verifing Points', function() {
     [[-72.1239401322, 169.455078125], true],
     [[-72.12429368459999, 169.455078129], false],
   ].forEach(([array, result]) => {
-    it(`100B Lattice: ${JSON.stringify(array)} should be ${result}`
-        , function() {
+    it(`100B Lattice: ${JSON.stringify(array)} should be ${result}`,
+        function() {
           assert.equal(Lattice100B.verifyPoint(
               array,
           ), result);
@@ -45,11 +44,12 @@ describe('Verifing Points', function() {
     [[93.2969772254, -169.457763671875]],
     [['-92.2970944864', -169.462890625]],
     [[-72.1239401322, 199.455078125]],
-    [true],
+    [[true]],
   ].forEach(([array]) => {
-    it(
-        `100B Lattice: ${JSON.stringify(array)} should throw`,
-        expect(() => Lattice100B.verifyPoint(array)).toThrow(),
+    it(`100B Lattice: ${JSON.stringify(array)} should throw`,
+        function() {
+          assert.equal(Lattice100B.verifyPoint(array), []);
+        },
     );
   });
 });
