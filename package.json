@@ -12,7 +12,7 @@
   "author": "Manvel Khnkoyan",
   "license": "MIT",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest --run"
   },
   "devDependencies": {
     "eslint": "^9.15.0",
